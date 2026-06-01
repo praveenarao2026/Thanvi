@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant Review: Science Paper 22 (May/June 2025)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #F4F7F6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .quiz-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            max-width: 750px;
+            width: 100%;
+            text-align: left;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: #8892B0;
+            margin-top: 0;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #2D3748;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .sub-points {
+            background-color: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #cbd5e1;
+            margin-bottom: 20px;
+        }
+        
+        .sub-points ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 1.1rem;
+            color: #475569;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        .option-item {
+            background-color: #EDF2F7;
+            margin: 10px 0;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: #718096; /* slightly faded for wrong answers */
+            border-left: 4px solid #CBD5E0;
+        }
+
+        .correct-option {
+            background-color: #C6F6D5 !important;
+            border-left: 5px solid #38A169 !important;
+            color: #22543D !important;
+            font-weight: 800;
+            transform: scale(1.02);
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .answer-box {
+            background-color: #E6FFFA;
+            border-left: 5px solid #319795;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .answer-title {
+            font-weight: 800;
+            color: #285E61;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .answer-title span {
+            background: #319795;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 15px;
+            margin-left: 10px;
+            font-size: 1rem;
+        }
+
+        .explanation {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #2D3748;
+        }
+
+        .trap-box {
+            background-color: #FFF5F5;
+            border-left: 5px solid #E53E3E;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .trap-title {
+            font-weight: 800;
+            color: #C53030;
+            margin-bottom: 5px;
+        }
+        
+        .trap-text {
+            color: #9B2C2C;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .btn-start, .btn-next {
+            background-color: #4299E1;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .btn-start:hover, .btn-next:hover {
+            background-color: #3182CE;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="intro-screen">
+        <h1 style="color:#2D3748; font-size: 1.8rem; border:none; text-align:center;">Instant Review Mode</h1>
+        <p style="text-align:center; font-size:1.1rem; color:#4A5568; margin-bottom: 30px;">
+            Paper: 0653 / 22 (May/June 2025)<br><br>
+            <strong>No timers. No pressure.</strong> <br>The correct answer will be highlighted immediately alongside clear explanations and trap breakdowns. Read at your own pace!
+        </p>
+        <button class="btn-start" onclick="startQuiz()">Start Review</button>
+    </div>
+
+    <div class="quiz-container" id="quiz-screen" style="display:none;">
+        <h1 id="q-counter">Question 1 of 40</h1>
+        
+        <div class="question-block" id="q-block">
+            </div>
+        
+        <ul class="options-list" id="q-options">
+            </ul>
+
+        <div class="answer-box" id="answer-box">
+            <div class="answer-title">Explanation <span id="a-correct">Option A</span></div>
+            <div class="explanation" id="a-exp">Explanation goes here</div>
+            <div class="trap-box">
+                <div class="trap-title">⚠️ The Trap:</div>
+                <div class="trap-text" id="a-trap">Trap breakdown goes here</div>
+            </div>
+        </div>
+
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <script>
+        const questions = [{"q": "1. Movement is a characteristic of all living organisms. Which two other characteristics of living organisms provide the energy for movement?", "options": ["A: excretion and nutrition", "B: growth and sensitivity", "C: nutrition and respiration", "D: respiration and growth"], "answer": "C", "explanation": "Respiration releases energy from food, and nutrition provides that food in the first place.", "trap": "Growth uses energy, but it does not provide it."}, {"q": "2. Which plant cell structure matches its function?", "options": ["A: cell membrane - provides strength and support", "B: chloroplast - absorbs light energy", "C: ribosome - provides protection", "D: vacuole - site of chemical reactions"], "answer": "B", "explanation": "Chloroplasts contain chlorophyll, which absorbs light energy to drive photosynthesis.", "trap": "The cell wall provides strength, not the membrane. Ribosomes synthesize proteins, they don't provide protection."}, {"q": "3. Which row describes osmosis correctly regarding the net movement of water molecules through a partially permeable membrane?", "options": ["A: from a dilute solution with a higher water potential to a concentrated solution with a lower water potential", "B: from a concentrated solution with a higher water potential to a dilute solution...", "C: from a dilute solution with a lower water potential...", "D: from a concentrated solution with a lower water potential..."], "answer": "A", "explanation": "Osmosis always moves water from where there is more water (dilute/high water potential) to where there is less water (concentrated/lower potential).", "trap": "Thinking 'concentrated' means highly concentrated with water; it actually means concentrated with dissolved solutes!"}, {"q": "4. The table shows the results of tests carried out on different food samples. Which food samples contain reducing sugar? (Benedict's solution is used to test for reducing sugars).", "options": ["A: 1 and 2", "B: 1 and 3", "C: 2 and 4", "D: 3 and 4"], "answer": "D", "explanation": "Benedict's solution is the standard test for reducing sugars. A positive result (tick) means reducing sugars are present.", "trap": "Biuret tests for proteins, and the ethanol emulsion tests for fats. Don't mix up your food tests!"}, {"q": "5. Which statement describes enzyme action in humans?", "options": ["A: Enzymes become denatured at 0\u00b0C.", "B: The activity of enzymes always increases with an increasing temperature.", "C: The enzyme active site and its substrate are the same shape.", "D: There are more-frequent effective collisions when the temperature increases from 20\u00b0C to 30\u00b0C."], "answer": "D", "explanation": "As temperature increases towards the optimum, particles gain kinetic energy, leading to more frequent and energetic collisions between enzymes and substrates.", "trap": "Enzymes do NOT denature at 0\u00b0C (they just become temporarily inactive). Also, active sites and substrates are 'complementary' shapes, not the exact same shape."}, {"q": "6. Four tubes containing hydrogencarbonate indicator are set up. Tubes 1 & 2 are in light, 3 & 4 are in dark. Tubes 1 & 3 contain an aquatic plant. What is the colour of the indicator after five hours?", "options": ["A: purple, red, red, red", "B: purple, red, yellow, red", "C: red, yellow, red, purple", "D: yellow, red, purple, red"], "answer": "B", "explanation": "Light + plant = photosynthesis removes CO2 (turns purple). Dark + plant = respiration adds CO2 (turns yellow). No plant = stays red (neutral).", "trap": "Forgetting that plants respire constantly! In the dark, they can't photosynthesize, so their respiration produces excess CO2."}, {"q": "7. A diet provides the correct energy requirements for a person but is not balanced. What are possible effects of this diet?<br><br>\u2022 1 constipation<br>\u2022 2 obesity<br>\u2022 3 scurvy", "options": ["A: 1, 2 and 3", "B: 1 and 2 only", "C: 1 and 3 only", "D: 2 and 3 only"], "answer": "C", "explanation": "Correct energy means no obesity (which is caused by excess energy). Unbalanced means missing vitamins/fiber, causing scurvy or constipation.", "trap": "Assuming 'unbalanced' automatically means eating too much junk food and getting obese."}, {"q": "8. What is a function of hydrochloric acid in the stomach?", "options": ["A: to help absorption of all food in the stomach", "B: to kill microorganisms in the ingested food", "C: to prevent chemical digestion", "D: to prevent the stomach contents being too acidic"], "answer": "B", "explanation": "The very low pH of stomach acid safely destroys harmful bacteria and pathogens on the food we eat.", "trap": "Acid doesn't digest food itself; it just provides the optimum pH environment for the enzyme pepsin to work."}, {"q": "9. Which statement explains why root hair cells have a long, thin shape?", "options": ["A: They are squeezed into this shape as they grow between soil particles.", "B: It is the most efficient shape for taking up food such as glucose.", "C: It provides a large surface area for diffusion of water.", "D: The narrow diameter allows them to gain carbon dioxide..."], "answer": "C", "explanation": "The elongated, thin shape massively increases the surface area to volume ratio, maximizing water absorption from the soil.", "trap": "Plants don't absorb glucose from the soil (they make it via photosynthesis). "}, {"q": "10. Which row correctly describes viruses? (have a protein coat, are pathogens, contain genetic material)", "options": ["A: Yes, Yes, Yes", "B: Yes, No, No", "C: Yes, No, Yes", "D: No, No, No"], "answer": "A", "explanation": "Viruses have an outer protein coat, they carry genetic material (DNA/RNA), and they are pathogens (disease-causing agents).", "trap": "Thinking viruses are true cells. They lack ribosomes and cytoplasm, but they definitely have genetic material and a protein coat."}, {"q": "11. The graphs show how the rate and depth of breathing varies. Which graph shows when the student is most active?", "options": ["A: Low frequency, high amplitude", "B: Low frequency, low amplitude", "C: High frequency, low amplitude", "D: High frequency, high amplitude"], "answer": "D", "explanation": "When highly active, your body needs maximum oxygen. This means breathing much faster (high frequency/rate) and much deeper (high amplitude/depth).", "trap": "Thinking only the speed of breathing increases. The volume (depth) of each breath also heavily increases during exercise."}, {"q": "12. Which statement about the use of antibiotics is correct?", "options": ["A: Overuse of antibiotics causes the development of bacteria such as MRSA.", "B: Antibiotics are prescribed for infections caused by viruses and bacteria.", "C: Antibiotics increase reproduction of non-resistant bacteria.", "D: Antibiotics only kill resistant bacteria."], "answer": "A", "explanation": "Overusing antibiotics kills weak bacteria but leaves strong mutants behind to multiply. This creates 'superbugs' like MRSA.", "trap": "Antibiotics do NOT kill viruses! They are completely useless against colds and flu."}, {"q": "13. In a food web, arrows go from a plant to a rabbit, stoat, and deer. Arrows go from the rabbit to an owl, fox, and stoat. Which row states the correct number of species?", "options": ["A: 6 primary, 1 secondary, 1 tertiary", "B: 5 primary, 2 secondary, 1 tertiary", "C: 5 primary, 2 secondary, 2 tertiary", "D: 4 primary, 3 secondary, 3 tertiary"], "answer": "B", "explanation": "Tracing the arrows carefully: the animals eating plants directly are primary consumers. Those eating the primary consumers are secondary.", "trap": "Remember that an animal (like a stoat) can occupy multiple trophic levels depending on which food chain within the web you follow."}, {"q": "14. A table describes changes of state. X is 'closer together and random' with 'decreases' energy. Y is 'closer together and regular' with 'decreases' energy. What are these?", "options": ["A: W is melting and Y is condensing.", "B: X is evaporating and W is condensing.", "C: Y is freezing and W is evaporating.", "D: W is melting and X is freezing."], "answer": "C", "explanation": "Y describes molecules locking into a rigid, regular pattern (freezing into a solid). X describes condensing into a liquid (close but random).", "trap": "If particles move 'closer together and regular', it can only be freezing. Gas and liquids are never regular."}, {"q": "15. Which statement describes a substance that contains covalent bonds?", "options": ["A: It is a coloured compound that contains a transition element.", "B: It is a good conductor of electricity when molten.", "C: It is a compound formed from two non-metallic elements.", "D: It can be broken down by the passage of an electric current."], "answer": "C", "explanation": "Covalent bonds form when two non-metals share pairs of electrons to achieve full outer shells.", "trap": "Metals reacting with non-metals form ionic bonds. Conducting electricity when molten is a classic ionic property, not covalent."}, {"q": "16. Which dot-and-cross diagram represents the arrangement of outer-shell electrons in a molecule of nitrogen (N2)?", "options": ["A: Three pairs of shared electrons in the middle", "B: One pair shared, lots of lone pairs", "C: Four pairs shared", "D: Two pairs shared"], "answer": "A", "explanation": "Nitrogen is in Group 5. It needs 3 more electrons for a full shell, so two nitrogen atoms must share 3 pairs of electrons, forming a triple bond.", "trap": "Miscounting the outer electrons. Nitrogen has 5 outer electrons, so after sharing 3, it must have exactly 2 lone electrons left on each side."}, {"q": "17. Which statement explains why a reaction is exothermic?", "options": ["A: More thermal energy is absorbed by breaking bonds than released by making bonds.", "B: More thermal energy is absorbed by making bonds than released by breaking.", "C: More thermal energy is released by breaking bonds than absorbed by making.", "D: More thermal energy is released by making bonds than is absorbed by breaking bonds."], "answer": "D", "explanation": "Breaking old bonds takes energy (endothermic). Making new bonds releases energy (exothermic). If more energy is released than taken in, it's exothermic overall.", "trap": "Getting the definitions backwards! Always remember: 'Break = takes in, Make = releases'."}, {"q": "18. Which statement explains why the rate of a reaction is greater at a higher temperature?", "options": ["A: The activation energy is higher.", "B: More colliding particles have the minimum energy to react.", "C: The frequency of collisions between reacting particles decreases.", "D: There are more reacting particles per unit volume."], "answer": "B", "explanation": "Heating gives particles more kinetic energy. This means a much larger percentage of collisions will hit harder than the required activation energy.", "trap": "Temperature never changes the actual activation energy! It only changes how many particles can overcome it."}, {"q": "19. Which word equation represents the reaction of an acid with a carbonate?", "options": ["A: acid + carbonate -> salt + carbon dioxide", "B: acid + carbonate -> salt + carbon dioxide + water", "C: acid + carbonate -> salt + hydrogen + water", "D: acid + carbonate -> salt + water"], "answer": "B", "explanation": "The classic reaction: Acid + Metal Carbonate always produces Salt + Water + Carbon Dioxide gas (which you see as fizzing).", "trap": "Acid + standard Metal makes Hydrogen. Acid + Base makes Salt + Water. Don't mix up your standard equations!"}, {"q": "20. Which row describes the physical state of the Group VII elements (Chlorine, Bromine, Iodine) at room temperature?", "options": ["A: gas, gas, liquid", "B: gas, liquid, solid", "C: liquid, liquid, gas", "D: liquid, solid, solid"], "answer": "B", "explanation": "As you go down Group 7 (the Halogens), melting and boiling points increase. Chlorine is a gas, Bromine is a liquid, and Iodine is a solid.", "trap": "Bromine is famous in chemistry for being the ONLY non-metal element that is a liquid at room temperature."}, {"q": "21. Which statement explains why all Group VIII elements are unreactive?", "options": ["A: They all have a complete outer shell of electrons.", "B: They all have only two electrons in their outer shell.", "C: They all have eight electrons in their outer shell.", "D: They all have no electrons in their outer shell."], "answer": "A", "explanation": "Noble gases are inert because their outermost electron shell is completely full, meaning they don't need to gain, lose, or share electrons.", "trap": "Saying 'they all have eight' is technically wrong because Helium only has 2 electrons in its complete outer shell."}, {"q": "22. Which element does not produce a gas when added to dilute hydrochloric acid?", "options": ["A: copper", "B: iron", "C: magnesium", "D: zinc"], "answer": "A", "explanation": "Copper is below hydrogen in the reactivity series. It is simply too unreactive to displace hydrogen from an acid.", "trap": "Magnesium, Zinc, and Iron are all reactive enough to fizz and produce hydrogen gas."}, {"q": "23. Which row describes the extraction of iron from its ore?", "options": ["A: bauxite - electrolysis", "B: bauxite - reduction in a blast furnace", "C: hematite - electrolysis", "D: hematite - reduction in a blast furnace"], "answer": "D", "explanation": "Iron's main ore is hematite. Because iron is less reactive than carbon, we can easily extract it by reducing it with carbon in a blast furnace.", "trap": "Bauxite is the ore for aluminium, and because aluminium is very reactive, it must be extracted using expensive electrolysis."}, {"q": "24. Which process is a physical change?", "options": ["A: combustion of solid carbon", "B: cracking of an alkane to give an alkene", "C: fractional distillation of petroleum", "D: rusting of iron"], "answer": "C", "explanation": "Distillation just boils and condenses liquids to separate them. No chemical bonds are made or broken, so it is a purely physical change.", "trap": "Combustion, cracking, and rusting all create entirely new chemical substances, making them permanent chemical changes."}, {"q": "25. A chromatogram shows four spots. Which substance has an Rf value of 0.6? (Baseline is 0, Solvent front is 20cm).", "options": ["A: Spot at 4cm", "B: Spot at 14cm", "C: Spot at 8cm", "D: Spot at 12cm"], "answer": "D", "explanation": "Rf = distance moved by spot \u00f7 distance moved by solvent. 12 \u00f7 20 = 0.6.", "trap": "Make sure you measure from the start baseline, not the very bottom of the paper!"}, {"q": "26. Potassium iodide reacts with lead(II) nitrate to produce yellow lead(II) iodide (solid) and potassium nitrate. What type of reaction is this, and how do you separate the solid?", "options": ["A: neutralisation, chromatography", "B: neutralisation, filtration", "C: precipitation, chromatography", "D: precipitation, filtration"], "answer": "D", "explanation": "When two liquids react to form an insoluble solid, it is called a precipitation reaction. You easily separate the solid using filter paper.", "trap": "Chromatography separates coloured inks, not chunky solid precipitates."}, {"q": "27. Which row shows an electrolyte and the correct products of electrolysis?", "options": ["A: conc. aqueous sodium chloride -> sodium and chlorine", "B: molten potassium bromide -> hydrogen and bromine", "C: molten sodium chloride -> sodium and chlorine", "D: dilute sulfuric acid -> hydrogen and sulfur dioxide"], "answer": "C", "explanation": "Molten NaCl contains only Na+ and Cl- ions. The Na+ goes to the cathode to make sodium, and Cl- goes to the anode to make chlorine.", "trap": "If the solution is 'aqueous' (dissolved in water), the water provides H+ ions. Hydrogen gas is produced instead of the reactive metal!"}, {"q": "28. A car of mass 1200 kg has a forward force of 900N and a backward force of 600N. What is the acceleration?", "options": ["A: 0.25 m/s\u00b2", "B: 0.75 m/s\u00b2", "C: 1.3 m/s\u00b2", "D: 4.0 m/s\u00b2"], "answer": "A", "explanation": "First, find the resultant force: 900 - 600 = 300N. Then use F = ma. a = F \u00f7 m = 300 \u00f7 1200 = 0.25 m/s\u00b2.", "trap": "Using the 900N forward force directly without subtracting the backward friction first!"}, {"q": "29. A brick of mass 2.0 kg falls from a height of 15 m. (g = 9.8 N/kg). What is the speed of the brick as it hits the ground?", "options": ["A: 12 m/s", "B: 17 m/s", "C: 150 m/s", "D: 290 m/s"], "answer": "B", "explanation": "Potential Energy = mgh = 2.0 * 9.8 * 15 = 294 J. This converts to Kinetic Energy (\u00bdmv\u00b2). So 294 = \u00bd * 2 * v\u00b2. v\u00b2 = 294, so v = \u221a294 = 17.1 m/s.", "trap": "Forgetting the square root at the very end of the kinetic energy calculation!"}, {"q": "30. Which process is the source of the energy released from the Sun?", "options": ["A: chemical reactions", "B: geothermal heating", "C: nuclear fission", "D: nuclear fusion"], "answer": "D", "explanation": "The intense heat and pressure in the Sun crush light hydrogen nuclei together to form heavier helium, releasing massive energy. This is fusion.", "trap": "Nuclear fission is the splitting of heavy atoms, which is what we do in nuclear power plants on Earth."}, {"q": "31. What is a property of both solids and liquids?", "options": ["A: They always fill a container.", "B: They can flow.", "C: They have a fixed shape.", "D: They have a fixed volume."], "answer": "D", "explanation": "In both solids and liquids, the particles are touching and closely packed. Because of this, neither state can be squashed or compressed (fixed volume).", "trap": "Only gases expand to completely fill a container. Only liquids take the shape of the bottom of a container."}, {"q": "32. Which material is a good thermal conductor?", "options": ["A: copper", "B: glass", "C: plastic", "D: wood"], "answer": "A", "explanation": "Copper is a metal. Metals contain a 'sea' of free, delocalised electrons that bump into each other and carry heat energy incredibly fast.", "trap": "Glass, plastic, and wood are all excellent thermal insulators, meaning they block heat transfer."}, {"q": "33. A room contains cold air. An electric heater is used to warm the air. Which statement explains why the warm air rises?", "options": ["A: Air contracts as it is warmed.", "B: Particles in warm air have less energy...", "C: The mass of the air particles decreases...", "D: Warm air is less dense than cold air."], "answer": "D", "explanation": "Heating air gives particles kinetic energy, causing them to spread out. The air expands, taking up more volume with the same mass, making it less dense (so it floats).", "trap": "Particles never, ever lose mass when heated! The whole packet of air just gets physically larger."}, {"q": "34. A horizontal rope wave has a vertical height of 5.0cm (middle to peak) and two full wave cycles span 40cm. What are amplitude and wavelength?", "options": ["A: Amp 5.0, Wave 10", "B: Amp 5.0, Wave 20", "C: Amp 10, Wave 10", "D: Amp 10, Wave 20"], "answer": "B", "explanation": "Amplitude is the distance from the rest position (middle) to the peak, which is 5.0cm. Two full waves equal 40cm, so one single wavelength is 20cm.", "trap": "Taking 40cm as the wavelength, or doubling the amplitude to 10cm by measuring from the very bottom trough to the top peak."}, {"q": "35. Which description of the image of an object in a plane mirror is correct?", "options": ["A: real and smaller than the object", "B: real and the same size as the object", "C: virtual and smaller than the object", "D: virtual and the same size as the object"], "answer": "D", "explanation": "A mirror image is exactly the same size as the object. It is 'virtual' because the light rays don't actually pass through the mirror (they just bounce off).", "trap": "A 'real' image is one that can be projected onto a blank wall or screen. You cannot project your bathroom reflection onto a wall."}, {"q": "36. What is the speed of infrared waves in a vacuum?", "options": ["A: 3.0 m/s", "B: 330 m/s", "C: 3.0 \u00d7 10^8 m/s", "D: 330 \u00d7 10^8 m/s"], "answer": "C", "explanation": "Infrared is part of the electromagnetic spectrum. Every single electromagnetic wave (light, X-rays, microwaves) travels at the exact speed of light in a vacuum.", "trap": "330 m/s is the approximate speed of sound in air, not light!"}, {"q": "37. Two charged rods, X and Y, are brought near positively charged rod Z. Rod Z is repelled by X and attracted by Y. What are the charges on X and Y?", "options": ["A: negative, negative", "B: negative, positive", "C: positive, negative", "D: positive, positive"], "answer": "C", "explanation": "Like charges repel. Since Z is positive and X repels it, X must also be positive. Opposite charges attract. Since Y attracts Z, Y must be negative.", "trap": "Second-guessing yourself! Just stick to the golden rule: opposites attract, likes repel."}, {"q": "38. There is a current of 2.0 A in a resistor of resistance 2.0\u03a9. How much charge flows through the resistor in 4.0 s?", "options": ["A: 0.50 C", "B: 2.0 C", "C: 8.0 C", "D: 16 C"], "answer": "C", "explanation": "Charge = Current \u00d7 Time (Q = I \u00d7 t). 2.0 A \u00d7 4.0 s = 8.0 Coulombs.", "trap": "The resistance (2.0\u03a9) is a distractor! You don't need it at all to calculate total charge flow."}, {"q": "39. A 400\u03a9 resistor and a 100\u03a9 resistor are connected in parallel. What is the combined resistance?", "options": ["A: 40 \u03a9", "B: 80 \u03a9", "C: 250 \u03a9", "D: 500 \u03a9"], "answer": "B", "explanation": "Formula for parallel: (R1 \u00d7 R2) \u00f7 (R1 + R2). (400 \u00d7 100) \u00f7 (400 + 100) = 40000 \u00f7 500 = 80 ohms.", "trap": "Adding them to get 500 ohms (that is for series circuits). A rule of thumb for parallel: the answer is ALWAYS smaller than the smallest resistor!"}, {"q": "40. An object orbits a planet. The period of the orbit is 8.0 hours. The speed is 2.0 km/s. What is the radius of the orbit?", "options": ["A: 1.5 \u00d7 10^5 m", "B: 9.2 \u00d7 10^6 m", "C: 2.9 \u00d7 10^7 m", "D: 3.6 \u00d7 10^8 m"], "answer": "B", "explanation": "Speed = distance / time. Distance is circumference (2\u00d7\u03c0\u00d7r). Time must be in seconds! 8 hrs = 28800s. 2000m/s = (2\u00d7\u03c0\u00d7r) / 28800. Solve for r = 9.16 \u00d7 10^6 m.", "trap": "Forgetting to convert hours into seconds, or converting km/s into m/s. Physics formulas demand standard SI units!"}
+        ];
+        let currentQIndex = 0;
+
+        // Function to extract numbers list into an array of strings (for bullet points)
+        function extractList(text) {
+            const parts = text.split(/(?=\d\s)/);
+            if(parts.length > 1) {
+                 const mainQ = parts[0].trim();
+                 const listItems = parts.slice(1).map(p => p.trim());
+                 const lastItem = listItems[listItems.length-1];
+                 let followUp = "";
+                 
+                 const splitPoint = lastItem.search(/[.?]\s+[A-Z]/);
+                 if(splitPoint !== -1) {
+                     followUp = lastItem.substring(splitPoint + 1).trim();
+                     listItems[listItems.length-1] = lastItem.substring(0, splitPoint + 1).trim();
+                 } else if (lastItem.includes("?")) {
+                      const qIndex = lastItem.indexOf("?");
+                      if(qIndex > 10 && qIndex < lastItem.length - 1) {
+                      }
+                 }
+                 
+                 if(text.includes("Which processes are characteristics")) {
+                     return {
+                         main: text.substring(0, text.indexOf(":")+1),
+                         list: ["1 egestion", "2 excretion", "3 nutrition", "4 respiration"],
+                         followUp: "Which processes are characteristics of all living organisms?"
+                     }
+                 }
+                 if(text.includes("What are features of a palisade")) {
+                     return {
+                         main: "What are features of a palisade mesophyll cell?",
+                         list: ["1 a nucleus", "2 a cell wall", "3 chloroplasts"],
+                         followUp: ""
+                     }
+                 }
+                 if(text.includes("Which nutrients provide")) {
+                     return {
+                         main: "Which nutrients provide a football player with the most energy per 100 g during a match?",
+                         list: ["1 carbohydrates", "2 calcium", "3 fats", "4 proteins"],
+                         followUp: ""
+                     }
+                 }
+                 if(text.includes("Which factors are possible risk")) {
+                     return {
+                         main: "Which factors are possible risk factors for coronary heart disease?",
+                         list: ["1 age", "2 genetic predisposition", "3 sex"],
+                         followUp: ""
+                     }
+                 }
+                 if(text.includes("Four statements about alkenes are listed")) {
+                      return {
+                          main: "Four statements about alkenes are listed. Which are correct?",
+                          list: ["1 Turn bromine colourless to orange.", "2 Reactants in addition reactions.", "3 React with steam with an acid catalyst.", "4 React with hydrogen without a catalyst."],
+                          followUp: ""
+                      }
+                 }
+            }
+            return null;
+        }
+
+        function startQuiz() {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            // Load Data
+            const qData = questions[currentQIndex];
+            document.getElementById('q-counter').innerText = `Question ${currentQIndex + 1} of ${questions.length}`;
+            
+            const qBlock = document.getElementById('q-block');
+            const extracted = extractList(qData.q);
+            
+            // Render Question Text with Bullets if applicable
+            if(extracted) {
+                let html = `<div class="question-text">${extracted.main}</div>`;
+                html += `<div class="sub-points"><ul>`;
+                extracted.list.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                html += `</ul></div>`;
+                if(extracted.followUp) {
+                    html += `<div class="question-text">${extracted.followUp}</div>`;
+                }
+                qBlock.innerHTML = html;
+            } else {
+                qBlock.innerHTML = `<div class="question-text">${qData.q}</div>`;
+            }
+
+            // Render Options & Highlight Correct One Instantly
+            const optionsList = document.getElementById('q-options');
+            optionsList.innerHTML = '';
+            
+            qData.options.forEach(opt => {
+                let li = document.createElement('li');
+                li.className = 'option-item';
+                li.innerHTML = opt;
+                
+                // If this option starts with the correct answer letter (e.g., "A:")
+                if (opt.startsWith(qData.answer + ":")) {
+                    li.classList.add('correct-option');
+                }
+                
+                optionsList.appendChild(li);
+            });
+
+            // Render Explanations and Traps Instantly
+            document.getElementById('a-correct').innerText = `Option ${qData.answer}`;
+            document.getElementById('a-exp').innerHTML = qData.explanation;
+            document.getElementById('a-trap').innerHTML = qData.trap;
+
+            // Change button text if last question
+            if (currentQIndex === questions.length - 1) {
+                document.getElementById('btn-next').innerText = "Finish Review Session";
+            }
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < questions.length) {
+                loadQuestion();
+                window.scrollTo(0, 0); // scroll to top for next question
+            } else {
+                document.getElementById('quiz-screen').innerHTML = `
+                    <h1 style="text-align:center; color:#48BB78; border:none; font-size:2rem; margin-top: 30px;">Review Complete!</h1>
+                    <p style="text-align:center; font-size:1.2rem; color:#4A5568;">Fantastic job reading through everything. Rest up and good luck on the exam!</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
