@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Untimed Review: Science Paper 22 (May/June 2024)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #F4F7F6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+        }
+        
+        .quiz-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            max-width: 750px;
+            width: 90%;
+            text-align: left;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: #8892B0;
+            margin-top: 0;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #2D3748;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Table Styling for specific questions */
+        .sub-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .sub-table th, .sub-table td {
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            text-align: center;
+        }
+        .sub-table th {
+            background: #e2e8f0;
+            color: #334155;
+            font-weight: 800;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        .option-item {
+            background-color: #EDF2F7;
+            margin: 10px 0;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: #4A5568;
+            border-left: 4px solid #CBD5E0;
+            transition: all 0.3s ease;
+        }
+
+        /* Highlight for the correct answer */
+        .option-item.highlight-correct {
+            background-color: #d4edda;
+            border-left: 6px solid #28a745;
+            color: #155724;
+            font-weight: 800;
+            transform: scale(1.02);
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.15);
+        }
+
+        .answer-box {
+            background-color: #FFF5F5;
+            border-left: 5px solid #E53E3E;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .answer-title {
+            font-weight: 800;
+            color: #C53030;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .explanation {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #2D3748;
+        }
+
+        .btn-start, .btn-reveal, .btn-next {
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .btn-start { background-color: #4299E1; }
+        .btn-start:hover { background-color: #3182CE; }
+
+        .btn-reveal { background-color: #805AD5; }
+        .btn-reveal:hover { background-color: #6B46C1; }
+
+        .btn-next { background-color: #48BB78; display: none; }
+        .btn-next:hover { background-color: #38A169; }
+
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="intro-screen">
+        <h1 style="color:#2D3748; font-size: 1.8rem; border:none; text-align:center;">Untimed Review Session</h1>
+        <p style="text-align:center; font-size:1.1rem; color:#4A5568; margin-bottom: 30px;">
+            Paper: 0653 / 22 (May/June 2024)<br><br>
+            Read the question and the options carefully. <br>Take as much time as you need. When you are ready, click "Reveal Answer" to see the correct option and the error-trap breakdown.
+        </p>
+        <button class="btn-start" onclick="startQuiz()">Begin Review Session</button>
+    </div>
+
+    <div class="quiz-container" id="quiz-screen" style="display:none;">
+        <h1 id="q-counter">Question 1 of 40</h1>
+        
+        <div class="question-text" id="q-text">Question goes here</div>
+        
+        <ul class="options-list" id="q-options">
+            </ul>
+
+        <button class="btn-reveal" id="btn-reveal" onclick="revealAnswer()">Reveal Answer</button>
+
+        <div class="answer-box" id="answer-box">
+            <div class="answer-title">⚠️ Explanation & Error Trap:</div>
+            <div class="explanation" id="a-exp">Explanation goes here</div>
+        </div>
+
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">Show Next Question</button>
+    </div>
+
+    <script>
+        const rawQuestionsData = [
+            {
+                id: 1,
+                text: "The diagram of a typical plant cell identifies external structures. Which part of the cell controls the movement of materials into and out of the cell?",
+                options: { A: "Cell membrane", B: "Cell wall", C: "Cytoplasm", D: "Large central vacuole" },
+                correct: "A",
+                trap: "Do not confuse structural borders with active barriers. The cell wall (B) is completely permeable and structurally rigid, serving to protect and keep structural pressure stable. The cell membrane (A) is the true partially permeable lipid layer that actively determines entry and exit parameters for ions and chemical compounds."
+            },
+            {
+                id: 2,
+                text: "Molecules can move into and out of biological cellular systems. Which row accurately sets out the net movement criteria for both diffusion and osmosis?",
+                table: `
+                    <table class="sub-table">
+                        <tr><th>Row</th><th>Diffusion Net Movement Parameters</th><th>Osmosis Net Movement Parameters</th></tr>
+                        <tr><td><b>A</b></td><td>Lower to higher concentration</td><td>Lower to higher water potential</td></tr>
+                        <tr><td><b>B</b></td><td>Lower to higher concentration</td><td>Higher to lower water potential</td></tr>
+                        <tr><td><b>C</b></td><td>Higher to lower concentration</td><td>Lower to higher water potential</td></tr>
+                        <tr><td><b>D</b></td><td>Higher to lower concentration</td><td>Higher to lower water potential</td></tr>
+                    </table>
+                `,
+                options: { A: "Row A", B: "Row B", C: "Row C", D: "Row D" },
+                correct: "D",
+                trap: "Both passive processes always drive movement down a net thermodynamic concentration gradient (from a region of higher concentration to lower concentration). For osmosis, this specifically means the passive shift of free water molecules from an area of higher water potential (dilute solution) to a lower water potential (concentrated solution)."
+            },
+            {
+                id: 3,
+                text: "Which statement describing the functional profile of biological catalysts is correct?",
+                options: { 
+                    A: "Enzymes are carbohydrates that alter reaction rates.", 
+                    B: "Enzymes are proteins that function as biological catalysts.", 
+                    C: "Enzymes speed up metabolic rates and are consumed during the chemical step.", 
+                    D: "Enzymes can only operate inside active metabolic cells." 
+                },
+                correct: "B",
+                trap: "A common pitfall is identifying enzymes as structural carbohydrates or believing that they are altered or consumed during the chemical cycle (C). Remember: they are structural proteins that remain structurally unchanged and ready to bind a new substrate molecule immediately after catalysis."
+            },
+            {
+                id: 4,
+                text: "A student reviews the fundamental environmental inputs required for a plant to initiate photosynthesis. Which chemical combination must be present for a green plant to manufacture carbohydrates?",
+                options: { 
+                    A: "Carbon dioxide, oxygen, and chlorophyll", 
+                    B: "Carbon dioxide, water, and oxygen", 
+                    C: "Carbon dioxide, water, light energy, and chlorophyll", 
+                    D: "Oxygen, water, light energy, and chlorophyll" 
+                },
+                correct: "C",
+                trap: "Watch out for oxygen (A, B, D). Oxygen is a gaseous byproduct of photosynthesis, not a starting reactant. Carbon dioxide and water are the raw inputs configured via light capture inside chloroplasts containing chlorophyll."
+            },
+            {
+                id: 5,
+                text: "A balanced human diet requires correct proportions of mineral ions and vitamins. Which deficiency condition is correctly matched with the missing nutrient component?",
+                options: { 
+                    A: "Vitamin D deficiency causes rickets", 
+                    B: "Vitamin C deficiency causes iron-deficiency anemia", 
+                    C: "Calcium deficiency prevents normal oxygen transport", 
+                    D: "Iron deficiency leads to soft bone tissue configurations" 
+                },
+                correct: "A",
+                trap: "Nutrient pairings can easily be flipped under pressure. Iron is essential for hemoglobin (oxygen transport), so its deficiency causes anemia. Calcium and Vitamin D are responsible for healthy bone mineralization; a lack of Vitamin D directly hinders calcium absorption, leading to rickets."
+            },
+            {
+                id: 6,
+                text: "The diagram displays a transverse cross-section of a plant stem. Which plant tissue manages the transport of water and mineral ions, and where is it located relative to the vascular bundle?",
+                options: { 
+                    A: "Phloem, located on the outer edge of the bundle", 
+                    B: "Xylem, located on the inner edge of the bundle", 
+                    C: "Phloem, located on the inner edge of the bundle", 
+                    D: "Xylem, located on the outer edge of the bundle" 
+                },
+                correct: "B",
+                trap: "Remember 'Phloem is Outside, Xylem is Inside' (P-O, X-I) in a typical stem vascular layout. Xylem is structurally reinforced to pull water upwards from the root system, positioning itself inward."
+            },
+            {
+                id: 7,
+                text: "A study tracks blood transit through the human circulatory path. Which structural sequence represents the flow of a single red blood cell leaving the lungs and heading towards the body tissues?",
+                options: { 
+                    A: "Pulmonary artery &rarr; Right atrium &rarr; Right ventricle &rarr; Aorta", 
+                    B: "Pulmonary vein &rarr; Right atrium &rarr; Right ventricle &rarr; Vena cava", 
+                    C: "Pulmonary vein &rarr; Left atrium &rarr; Left ventricle &rarr; Aorta", 
+                    D: "Pulmonary artery &rarr; Left atrium &rarr; Left ventricle &rarr; Vena cava" 
+                },
+                correct: "C",
+                trap: "Oxygenated blood returns from the respiratory tissue via the pulmonary vein. It enters the left side of the heart (left atrium to left ventricle) to be pumped into systemic circulation through the aorta. The right side manages deoxygenated blood returning from the body tissues."
+            },
+            {
+                id: 8,
+                text: "What are the chemical differences in gas percentages when comparing inspired air with expired air passing through human lungs?",
+                options: { 
+                    A: "Expired air contains more oxygen and less carbon dioxide than inspired air.", 
+                    B: "Expired air contains more oxygen and more water vapor than inspired air.", 
+                    C: "Expired air contains less carbon dioxide and less water vapor than inspired air.", 
+                    D: "Expired air contains less oxygen and more carbon dioxide than inspired air." 
+                },
+                correct: "D",
+                trap: "Internal cell respiration consistently uses up oxygen and creates carbon dioxide. Therefore, exhaled gas always shows a drop in oxygen levels and a rise in carbon dioxide and water vapor content."
+            },
+            {
+                id: 9,
+                text: "Which statement accurately describes aerobic respiration?",
+                options: { 
+                    A: "It produces lactic acid in animal muscle cells.", 
+                    B: "It does not require oxygen to release energy.", 
+                    C: "It occurs entirely within the cell nucleus.", 
+                    D: "It is the cellular release of a relatively large amount of energy from glucose using oxygen." 
+                },
+                correct: "D",
+                trap: "Lactic acid generation is an anaerobic pathway found in over-exerted muscles. Aerobic pathways utilize oxygen to break down glucose completely, yielding carbon dioxide, water, and a much larger amount of energy."
+            },
+            {
+                id: 10,
+                text: "A plant shoot exhibits growth curvature toward a light source coming from one side. What is the name of this response and how does auxin coordinate it?",
+                options: { 
+                    A: "Negative phototropism; auxin breaks down on the illuminated side.", 
+                    B: "Positive gravitropism; auxin concentrates on the shaded side.", 
+                    C: "Positive phototropism; auxin concentrates on the shaded side to cause cell elongation.", 
+                    D: "Negative gravitropism; auxin moves to the illuminated side to restrict cell growth." 
+                },
+                correct: "C",
+                trap: "Growth toward light is *positive phototropism*. Auxin migrates to the shaded side of the shoot tip, causing the cells on that side to elongate faster. This uneven growth rate bends the plant toward the light source."
+            },
+            {
+                id: 11,
+                text: "Which row accurately matches an advantage and a disadvantage of asexual reproduction for a plant species in the wild?",
+                table: `
+                    <table class="sub-table">
+                        <tr><th>Row</th><th>Advantage in Wild Habitat</th><th>Disadvantage in Wild Habitat</th></tr>
+                        <tr><td><b>A</b></td><td>Produces high genetic variation</td><td>Requires two matching parent organisms</td></tr>
+                        <tr><td><b>B</b></td><td>Allows rapid population establishment</td><td>Offspring are genetically identical, risking disease vulnerability</td></tr>
+                        <tr><td><b>C</b></td><td>Promotes widespread seed dispersal</td><td>Demands heavy energy input to form pollen vectors</td></tr>
+                        <tr><td><b>D</b></td><td>Increases species adaptation potential</td><td>Resulting plants fail to achieve maturity</td></tr>
+                    </table>
+                `,
+                options: { A: "Row A", B: "Row B", C: "Row C", D: "Row D" },
+                correct: "B",
+                trap: "Asexual reproduction creates exact genetic clones. While this allows a well-adapted organism to populate an area quickly without finding a mate, the lack of genetic variation means an entire population could be wiped out by a single disease or environmental change."
+            },
+            {
+                id: 12,
+                text: "The diagram maps a basic food web in an ecosystem. Which term describes an organism that obtains its energy by feeding on other animals only?",
+                options: { A: "Carnivore", B: "Herbivore", C: "Producer", D: "Primary Consumer" },
+                correct: "A",
+                trap: "Herbivores eat producers (plants). Primary consumers are typically herbivores. Organisms that feed exclusively on other animals are carnivores, occupying secondary or tertiary consumer levels."
+            },
+            {
+                id: 13,
+                text: "What is an undesirable environmental consequence of dumping untreated chemical waste and raw sewage into freshwater rivers?",
+                options: { 
+                    A: "An immediate permanent rise in dissolved oxygen levels", 
+                    B: "A decrease in the growth of aquatic bacterial colonies", 
+                    C: "Structural stabilization of local food chains", 
+                    D: "Eutrophication, leading to a severe reduction in aquatic biodiversity" 
+                },
+                correct: "D",
+                trap: "Organic waste feeds decomposers and bacteria, which rapidly multiply and consume the dissolved oxygen in the water. This lack of oxygen causes other aquatic organisms to suffocate, leading to a severe loss of biodiversity (eutrophication)."
+            },
+            {
+                id: 14,
+                text: "Which process represents a purely physical change rather than a permanent chemical reaction?",
+                options: { 
+                    A: "Burning a piece of magnesium ribbon in air", 
+                    B: "The fractional distillation of liquid crude oil", 
+                    C: "The thermal decomposition of solid calcium carbonate", 
+                    D: "Electrolysis of molten lead(II) bromide" 
+                },
+                correct: "B",
+                trap: "Fractional distillation separates hydrocarbons based on their physical boiling points without breaking or forming chemical bonds. Burning (A), thermal cracking/decomposition (C), and electrolysis (D) all alter chemical formulas and form new substances."
+            },
+            {
+                id: 15,
+                text: "A student analyzes a clear liquid compound. Which parameter provides absolute proof that the substance is entirely pure water?",
+                options: { 
+                    A: "It boils at exactly 100°C at standard atmospheric pressure.", 
+                    B: "It turns anhydrous copper(II) sulfate from white to blue.", 
+                    C: "It exhibits a neutral pH value of 7.0 at room temperature.", 
+                    D: "It does not leave a solid residue when evaporated." 
+                },
+                correct: "A",
+                trap: "Turning copper sulfate blue (B) is a chemical test for the *presence* of water, but it will happen even if the water is full of impurities. A sharp, fixed boiling point at exactly 100°C is a physical property unique to *pure* water."
+            },
+            {
+                id: 16,
+                text: "The table contains details about three separate particle structures: X, Y, and Z. What are the identities of these structures based on their subatomic counts?",
+                table: `
+                    <table class="sub-table">
+                        <tr><th>Particle</th><th>Protons</th><th>Neutrons</th><th>Electrons</th></tr>
+                        <tr><td><b>X</b></td><td>11</td><td>12</td><td>11</td></tr>
+                        <tr><td><b>Y</b></td><td>11</td><td>12</td><td>10</td></tr>
+                        <tr><td><b>Z</b></td><td>17</td><td>18</td><td>18</td></tr>
+                    </table>
+                `,
+                options: { 
+                    A: "X is a sodium ion, Y is a sodium atom, Z is a chlorine atom", 
+                    B: "X is a sodium atom, Y is a sodium atom, Z is a chloride ion", 
+                    C: "X is a sodium ion, Y is a sodium ion, Z is a chlorine atom", 
+                    D: "X is a sodium atom, Y is a sodium ion, Z is a chloride ion" 
+                },
+                correct: "D",
+                trap: "Check the proton-to-electron balance. Particle X has equal protons and electrons (11 each), making it a neutral atom (Sodium). Particle Y has 11 protons but only 10 electrons, giving it a 1+ charge (Sodium ion). Particle Z has 17 protons and 18 electrons, giving it a 1- charge (Chloride ion)."
+            },
+            {
+                id: 17,
+                text: "Methane (CH<sub>4</sub>) and water (H<sub>2</sub>O) are covalent molecules. Which statement correctly outlines how covalent bonds are formed?",
+                options: { 
+                    A: "Electrons are transferred from metal atoms to non-metal atoms.", 
+                    B: "Non-metal atoms share pairs of valence electrons to achieve stable outer shells.", 
+                    C: "Electrostatic forces lock oppositely charged ion fields into giant grids.", 
+                    D: "Van der Waals forces link metallic atomic cores together." 
+                },
+                correct: "B",
+                trap: "Electron transfer (A) and electrostatic attraction between ions (C) define *ionic* bonding. Covalent bonding occurs exclusively between non-metal atoms through the *sharing* of electron pairs."
+            },
+            {
+                id: 18,
+                text: "The balanced symbol chemical equation for the complete combustion of propane gas is written as: C<sub>3</sub>H<sub>8</sub> + xO<sub>2</sub> &rarr; yCO<sub>2</sub> + zH<sub>2</sub>O. What are the correct stoichiometric balancing values for coefficients x, y, and z?",
+                options: { A: "x=5, y=3, z=4", B: "x=3, y=3, z=4", C: "x=5, y=4, z=3", D: "x=4, y=3, z=5" },
+                correct: "A",
+                trap: "Count the atoms on both sides. Propane has 3 Carbons, requiring y=3 CO<sub>2</sub>. It has 8 Hydrogens, requiring z=4 H<sub>2</sub>O. This gives a total of (3×2) + (4×1) = 10 Oxygen atoms on the right side, meaning we need x=5 O<sub>2</sub> molecules on the left."
+            },
+            {
+                id: 19,
+                text: "During the electrolysis of molten lead(II) bromide using inert carbon electrodes, what chemical products form at the anode and cathode interfaces?",
+                options: { 
+                    A: "Anode: Lead metal metal | Cathode: Bromine gas", 
+                    B: "Anode: Hydrogen gas | Cathode: Oxygen gas", 
+                    C: "Anode: Bromine gas | Cathode: Lead metal", 
+                    D: "Anode: Oxygen gas | Cathode: Lead metal" 
+                },
+                correct: "C",
+                trap: "Remember 'Don't Panic: Positive Anode, Negative Cathode' (PANIC). Negatively charged bromide ions (Anions) are attracted to the positive Anode, where they lose electrons to form bromine gas. Positively charged lead ions (Cations) travel to the negative Cathode, where they gain electrons to form liquid lead metal."
+            },
+            {
+                id: 20,
+                text: "An industrial process monitors thermal shifts during chemical changes. Which statement correctly identifies endothermic and exothermic profiles?",
+                options: { 
+                    A: "Endothermic reactions release thermal energy; the surrounding temperature climbs.", 
+                    B: "Exothermic reactions release thermal energy; the surrounding temperature climbs.", 
+                    C: "Endothermic reactions involve bond-making steps only.", 
+                    D: "Exothermic processes absorb energy to cleave complex molecular arrays." 
+                },
+                correct: "B",
+                trap: "*Exo*thermic reactions exit/release heat into the surroundings, causing temperatures to rise. *Endo*thermic reactions take in heat from the surroundings, causing a temperature drop. Remember: bond-breaking is endothermic, while bond-making is exothermic."
+            },
+            {
+                id: 21,
+                text: "Which modification will cause an increase in the initial rate of a chemical reaction between solid zinc granules and dilute hydrochloric acid?",
+                options: { 
+                    A: "Cooling the acid mixture down to reduce thermal energy levels", 
+                    B: "Adding water to dilute the initial concentration of the acid", 
+                    C: "Grinding the zinc granules into a fine powder to increase surface area", 
+                    D: "Using a larger beaker to increase the total volume space" 
+                },
+                correct: "C",
+                trap: "Grinding the zinc into a powder increases the available surface area. This exposes more zinc atoms to the acid at once, leading to more frequent collisions per second. Diluting the acid (B) or cooling it down (A) would slow the reaction rate."
+            },
+            {
+                id: 22,
+                text: "Copper(II) sulfate is a soluble salt. It can be prepared by reacting insoluble copper(II) oxide powder with warm dilute sulfuric acid. What is the correct sequence of laboratory stages to obtain clean, dry crystals of the salt?",
+                options: { 
+                    A: "Evaporation &rarr; Filtration &rarr; Crystallisation", 
+                    B: "Filtration &rarr; Distillation &rarr; Titration", 
+                    C: "Crystallisation &rarr; Chromatography &rarr; Evaporation", 
+                    D: "Reaction &rarr; Filtration &rarr; Evaporation/Crystallisation" 
+                },
+                correct: "D",
+                trap: "Because excess insoluble copper oxide is added to ensure all the acid reacts, this unreacted solid must be removed via filtration *before* evaporating the solution. Evaporating the filtered solution triggers crystallisation."
+            },
+            {
+                id: 23,
+                text: "Which descriptive test result confirms the presence of aqueous chloride ions in a solution?",
+                options: { 
+                    A: "Adding dilute nitric acid followed by aqueous silver nitrate yields a white precipitate.", 
+                    B: "Adding aqueous sodium hydroxide yields a light blue precipitate.", 
+                    C: "Adding dilute hydrochloric acid causes effervescence of a gas that turns limewater milky.", 
+                    D: "A damp red litmus paper segment shifts immediately to dark blue." 
+                },
+                correct: "A",
+                trap: "The standard test for halide ions involves adding silver nitrate. Chloride ions form an insoluble white precipitate of silver chloride (AgCl). Option B is the test for copper(II) ions, and Option C is the test for carbonate ions."
+            },
+            {
+                id: 24,
+                text: "The diagram shows a section of the Periodic Table. How do metallic properties and Group trends shift as you move across a period from left to right, and down a group?",
+                options: { 
+                    A: "Metallic character decreases across a period and increases down a group.", 
+                    B: "Metallic character increases across a period and decreases down a group.", 
+                    C: "Metallic character decreases across a period and decreases down a group.", 
+                    D: "Metallic character increases across a period and increases down a group." 
+                },
+                correct: "A",
+                trap: "Elements shift from metals (left) to non-metals (right) across a period, meaning metallic character decreases. Descending a group, elements can more easily shed valence electrons, which increases metallic character."
+            },
+            {
+                id: 25,
+                text: "Why are noble gases, such as argon and helium, chemically unreactive and found as monoatomic gases?",
+                options: { 
+                    A: "They contain an odd number of nuclear protons.", 
+                    B: "They form extremely strong diatomic covalent pairs.", 
+                    C: "They possess a stable, full outer shell of valence electrons.", 
+                    D: "Their boiling points sit near absolute zero." 
+                },
+                correct: "C",
+                trap: "Noble gases already have a full outer valence shell (an octet, or a duet for helium). Because they are stable, they do not need to share, gain, or lose electrons by bonding with other atoms."
+            },
+            {
+                id: 26,
+                text: "Which row matches the properties of a typical transition element, such as iron or copper, compared to an alkali metal like sodium?",
+                table: `
+                    <table class="sub-table">
+                        <tr><th>Option</th><th>Density Comparison</th><th>Melting Point Comparison</th><th>Chemical Compounds Status</th></tr>
+                        <tr><td><b>A</b></td><td>Lower density</td><td>Lower melting point</td><td>Form white compounds only</td></tr>
+                        <tr><td><b>B</b></td><td>Lower density</td><td>Higher melting point</td><td>Form colored compounds</td></tr>
+                        <tr><td><b>C</b></td><td>Higher density</td><td>Lower melting point</td><td>Form white compounds only</td></tr>
+                        <tr><td><b>D</b></td><td>Higher density</td><td>Higher melting point</td><td>Form colored compounds</td></tr>
+                    </table>
+                `,
+                options: { A: "Row A", B: "Row B", C: "Row C", D: "Row D" },
+                correct: "D",
+                trap: "Transition metals are much denser and have significantly higher melting points than soft Group I alkali metals. They are also known for their ability to form characteristically colored compounds (such as blue copper compounds or green/brown iron compounds)."
+            },
+            {
+                id: 27,
+                text: "A student passes clean air through an analytical tube network. What is the approximate percentage composition of nitrogen and oxygen gases in a clean sample of dry atmospheric air?",
+                options: { 
+                    A: "78% Oxygen, 21% Nitrogen", 
+                    B: "50% Nitrogen, 50% Oxygen", 
+                    C: "78% Nitrogen, 21% Oxygen", 
+                    D: "98% Nitrogen, 1% Oxygen" 
+                },
+                correct: "C",
+                trap: "Do not mix up the values for these two gases under pressure. Nitrogen makes up the largest share of our atmosphere at roughly 78%, while oxygen accounts for about 21%."
+            },
+            {
+                id: 28,
+                text: "A runner covers a path on a track. The motion is plotted on a distance-time graph. The line is linear and climbs at a steady diagonal slope. What does the gradient of this distance-time graph represent?",
+                options: { A: "Acceleration", B: "Speed", C: "Total distance covered", D: "Time intervals consumed" },
+                correct: "B",
+                trap: "The gradient (slope) of a *distance-time* graph represents speed. On a *speed-time* graph, the gradient represents acceleration. Mixing up these two types of graphs is a very common exam error."
+            },
+            {
+                id: 29,
+                text: "A solid rectangular brick weighs 48 N and has dimensions of 0.10 m &times; 0.20 m &times; 0.40 m. What is the maximum pressure the brick can exert on a flat floor surface when stood on one of its faces?",
+                options: { A: "600 Pa", B: "1200 Pa", C: "2400 Pa", D: "4800 Pa" },
+                correct: "C",
+                trap: "To find the *maximum* pressure, use the *smallest* surface area face ($P = F / A$). The smallest face area is $0.10\\text{ m} \\times 0.20\\text{ m} = 0.02\\text{ m}^2$. Calculating pressure: $48\\text{ N} / 0.02\\text{ m}^2 = 2400\\text{ Pa}$. Using the largest face would give you the minimum pressure instead."
+            },
+            {
+                id: 30,
+                text: "An energy resource analysis assesses power generation metrics. Which energy resource does not rely on energy initially radiated from the Sun?",
+                options: { A: "Biofuels", B: "Hydroelectric power plants", C: "Wind turbines", D: "Geothermal power installations" },
+                correct: "D",
+                trap: "Wind, hydro, and biofuels all trace their energy back to the Sun (which drives weather patterns, the water cycle, and photosynthesis). Geothermal energy relies entirely on radioactive decay and heat trapped deep within the Earth's core."
+            },
+            {
+                id: 31,
+                text: "A liquid is heated in a beaker. The molecules escape from the surface of the liquid below its boiling point. What is the name of this process and how does it affect the temperature of the remaining liquid?",
+                options: { 
+                    A: "Evaporation; it lowers the temperature of the remaining liquid.", 
+                    B: "Boiling; it raises the temperature of the remaining liquid.", 
+                    C: "Evaporation; it raises the temperature of the remaining liquid.", 
+                    D: "Boiling; it keeps the temperature completely constant." 
+                },
+                correct: "A",
+                trap: "This process is evaporation. Because only the fastest, most energetic molecules escape from the liquid's surface, the average kinetic energy of the remaining molecules drops, lowering the overall temperature of the liquid."
+            },
+            {
+                id: 32,
+                text: "How is thermal energy transferred through a vacuum in outer space, such as the energy reaching Earth from the Sun?",
+                options: { A: "Conduction only", B: "Convection only", C: "Radiation only", D: "Conduction and Convection combined" },
+                correct: "C",
+                trap: "Conduction and convection both require a physical material (particles) to transfer heat. Because space is a vacuum, thermal energy can only travel through it via electromagnetic infrared waves (radiation)."
+            },
+            {
+                id: 33,
+                text: "A wave traveling along a stretched rope shows a peak-to-peak distance of 2.0 meters between two consecutive crests. If 10 complete crests pass a fixed point in 5.0 seconds, what are the wavelength and frequency of the wave?",
+                options: { 
+                    A: "Wavelength = 1.0 m | Frequency = 2.0 Hz", 
+                    B: "Wavelength = 2.0 m | Frequency = 2.0 Hz", 
+                    C: "Wavelength = 2.0 m | Frequency = 0.5 Hz", 
+                    D: "Wavelength = 4.0 m | Frequency = 10 Hz" 
+                },
+                correct: "B",
+                trap: "The distance between consecutive crests is the definition of wavelength (2.0 m). Frequency is the number of complete waves passing a point per second ($10 \\text{ waves} / 5.0 \\text{ seconds} = 2.0 \\text{ Hz}$)."
+            },
+            {
+                id: 34,
+                text: "A student stands 1.5 meters directly in front of a vertical plane mirror. What is the total distance between the student and their reflected image?",
+                options: { A: "1.5 meters", B: "3.0 meters", C: "0 meters", D: "4.5 meters" },
+                correct: "B",
+                trap: "The image appears as far behind the mirror as the object is in front of it (1.5 m). Therefore, the total distance from the student to their image is $1.5\\text{ m} + 1.5\\text{ m} = 3.0\\text{ meters}$."
+            },
+            {
+                id: 35,
+                text: "White light passes through a glass prism and splits into a spectrum of colors. What is the name of this phenomenon and which color refracts (bends) the most?",
+                options: { 
+                    A: "Dispersion; violet light bends the most.", 
+                    B: "Diffraction; red light bends the most.", 
+                    C: "Dispersion; red light bends the most.", 
+                    D: "Refraction; green light stops bending." 
+                },
+                correct: "A",
+                trap: "Splitting light into its component colors is called *dispersion*. Violet light has a shorter wavelength and slows down the most in glass, meaning it refracts (bends) the most. Red light bends the least."
+            },
+            {
+                id: 36,
+                text: "Which row correctly identifies the typical speed of sound waves traveling through air, pure liquid water, and a solid iron bar?",
+                table: `
+                    <table class="sub-table">
+                        <tr><th>Option</th><th>Speed in Air (m/s)</th><th>Speed in Water (m/s)</th><th>Speed in Iron (m/s)</th></tr>
+                        <tr><td><b>A</b></td><td>1500</td><td>330</td><td>5000</td></tr>
+                        <tr><td><b>B</b></td><td>5000</td><td>1500</td><td>330</td></tr>
+                        <tr><td><b>C</b></td><td>330</td><td>1500</td><td>5000</td></tr>
+                        <tr><td><b>D</b></td><td>330</td><td>5000</td><td>1500</td></tr>
+                    </table>
+                `,
+                options: { A: "Row A", B: "Row B", C: "Row C", D: "Row D" },
+                correct: "C",
+                trap: "Sound travels faster in denser materials where particles are tightly packed together. It travels slowest in gases (~330 m/s), faster in liquids (~1500 m/s), and fastest in solids (~5000 m/s)."
+            },
+            {
+                id: 37,
+                text: "A plastic rod becomes negatively charged when rubbed vigorously with a dry wool cloth. Which statement explains how the rod becomes charged?",
+                options: { 
+                    A: "Protons migrate from the cloth onto the rod.", 
+                    B: "Electrons migrate from the rod onto the cloth.", 
+                    C: "Protons are destroyed inside the plastic material matrix.", 
+                    D: "Electrons migrate from the cloth onto the rod." 
+                },
+                correct: "D",
+                trap: "Static charging is caused entirely by the movement of *electrons*. Protons are locked tight inside the atomic nucleus and never move during friction rubbing. Gaining electrons gives the rod a net negative charge."
+            },
+            {
+                id: 38,
+                text: "A simple electrical circuit contains a 12V battery connected to a single resistor. An ammeter shows a current reading of 3.0 A. How much electrical energy is transferred in the circuit over a period of 2.0 minutes?",
+                options: { A: "72 J", B: "4320 J", C: "36 J", D: "2160 J" },
+                correct: "B",
+                trap: "Always convert time into seconds first: $2.0 \\text{ minutes} = 120 \\text{ seconds}$. Use the electrical energy formula $E = V \\times I \\times t$: $12\\text{ V} \\times 3.0\\text{ A} \\times 120\\text{ s} = 4320\\text{ Joules}$. Forgetting to convert minutes to seconds leads straight to the trap answer of 72 J."
+            },
+            {
+                id: 39,
+                text: "Two identical 6.0 $\\Omega$ resistors are connected in a parallel network. What is the total combined effective resistance of this parallel combination?",
+                options: { A: "3.0 $\\Omega$", B: "6.0 $\\Omega$", C: "12 $\\Omega$", D: "0.33 $\\Omega$" },
+                correct: "A",
+                trap: "Connecting resistors in parallel creates extra paths for the current, which always *lowers* the total resistance. For two identical resistors in parallel, the total resistance is exactly half of one resistor ($6.0\\,\\Omega / 2 = 3.0\\,\\Omega$). Adding them together (12 $\\Omega$) is the rule for series circuits, not parallel."
+            },
+            {
+                id: 40,
+                text: "An electrical appliance is fitted with a safety fuse. Which statement correctly explains the installation position and function of a fuse?",
+                options: { 
+                    A: "It is placed in the neutral wire and melts if the current becomes too small.", 
+                    B: "It is placed in the live wire and safely stores excess electrical current.", 
+                    C: "It is placed in the earth wire and insulates the outer casing structure.", 
+                    D: "It is placed in the live wire and melts to break the circuit if the current exceeds a safe limit." 
+                },
+                correct: "D",
+                trap: "Fuses must always be installed in the *live wire* to cut off the high voltage supply before it reaches the appliance. Its purpose is to melt and break the circuit safely if a fault causes the current to spike dangerously high."
+            }
+        ];
+
+        // Format data to match our UI
+        const questions = rawQuestionsData.map(q => {
+            let fullText = q.id + ". " + q.text;
+            if(q.table) {
+                fullText += q.table;
+            }
+            return {
+                q: fullText,
+                options: [
+                    "A: " + q.options.A,
+                    "B: " + q.options.B,
+                    "C: " + q.options.C,
+                    "D: " + q.options.D
+                ],
+                answer: q.correct,
+                explanation: q.trap
+            };
+        });
+
+        let currentQIndex = 0;
+
+        function startQuiz() {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            // Reset UI for the new question
+            document.getElementById('answer-box').style.display = 'none';
+            document.getElementById('answer-box').style.opacity = '0';
+            document.getElementById('btn-next').style.display = 'none';
+            document.getElementById('btn-reveal').style.display = 'block';
+
+            // Load Data
+            const qData = questions[currentQIndex];
+            document.getElementById('q-counter').innerText = `Question ${currentQIndex + 1} of ${questions.length}`;
+            document.getElementById('q-text').innerHTML = qData.q;
+            
+            const optionsList = document.getElementById('q-options');
+            optionsList.innerHTML = '';
+            qData.options.forEach(opt => {
+                let li = document.createElement('li');
+                li.className = 'option-item';
+                li.innerHTML = opt;
+                optionsList.appendChild(li);
+            });
+
+            document.getElementById('a-exp').innerHTML = qData.explanation;
+        }
+
+        function revealAnswer() {
+            // Hide the reveal button
+            document.getElementById('btn-reveal').style.display = 'none';
+            
+            // Highlight correct option dynamically
+            const optionsList = document.getElementById('q-options').children;
+            const correctLetter = questions[currentQIndex].answer;
+            for (let i = 0; i < optionsList.length; i++) {
+                if (optionsList[i].innerText.startsWith(correctLetter + ":")) {
+                    optionsList[i].classList.add('highlight-correct');
+                }
+            }
+
+            // Show the explanation box
+            const answerBox = document.getElementById('answer-box');
+            answerBox.style.display = 'block';
+            
+            // Trigger fade in for the explanation box
+            setTimeout(() => {
+                answerBox.style.opacity = '1';
+                
+                // Show next button after fade
+                setTimeout(() => {
+                    document.getElementById('btn-next').style.display = 'block';
+                    if (currentQIndex === questions.length - 1) {
+                        document.getElementById('btn-next').innerText = "Finish Review Session";
+                    }
+                }, 300);
+
+            }, 50);
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < questions.length) {
+                loadQuestion();
+            } else {
+                document.getElementById('quiz-screen').innerHTML = `
+                    <h1 style="text-align:center; color:#48BB78; border:none; font-size:2rem;">Session Complete!</h1>
+                    <p style="text-align:center; font-size:1.2rem;">Amazing job. Take a break and rest up before the exam!</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

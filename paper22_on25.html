@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oct Nov 2025: Science Paper 22 (Untimed)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #F4F7F6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+        }
+        
+        .quiz-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            max-width: 700px;
+            width: 90%;
+            text-align: left;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            color: #8892B0;
+            margin-top: 0;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 10px;
+        }
+
+        .question-block {
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #2D3748;
+            margin-bottom: 15px;
+        }
+        
+        .sub-points {
+            background-color: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #cbd5e1;
+            margin-bottom: 20px;
+        }
+        
+        .sub-points ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 1.1rem;
+            color: #475569;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        .option-item {
+            background-color: #EDF2F7;
+            margin: 10px 0;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            color: #4A5568;
+            transition: all 0.3s ease;
+        }
+
+        /* Highlight for the correct answer */
+        .option-item.highlight-correct {
+            background-color: #d4edda;
+            border-left: 6px solid #28a745;
+            color: #155724;
+            font-weight: 800;
+            transform: scale(1.02);
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.15);
+        }
+
+        .answer-box {
+            background-color: #E6FFFA;
+            border-left: 5px solid #319795;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .answer-title {
+            font-weight: 800;
+            color: #285E61;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .explanation {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .trap-box {
+            background-color: #FFF5F5;
+            border-left: 5px solid #E53E3E;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .trap-title {
+            font-weight: 800;
+            color: #C53030;
+            margin-bottom: 5px;
+        }
+
+        .btn-start, .btn-reveal, .btn-next {
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .btn-start { background-color: #4299E1; }
+        .btn-start:hover { background-color: #3182CE; }
+
+        .btn-reveal { background-color: #805AD5; }
+        .btn-reveal:hover { background-color: #6B46C1; }
+
+        .btn-next { background-color: #48BB78; display: none; }
+        .btn-next:hover { background-color: #38A169; }
+
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="intro-screen">
+        <h1 style="color:#2D3748; font-size: 1.8rem; border:none; text-align:center;">Oct Nov 2025 Session</h1>
+        <p style="text-align:center; font-size:1.1rem; color:#4A5568; margin-bottom: 30px;">
+            Read the question and the options carefully. <br>Take as much time as you need. When you are ready, click "Reveal Answer" to see the correct option and the error-trap breakdown.
+        </p>
+        <button class="btn-start" onclick="startQuiz()">Begin Review Session</button>
+    </div>
+
+    <div class="quiz-container" id="quiz-screen" style="display:none;">
+        <h1 id="q-counter">Question 1 of 40</h1>
+        
+        <div class="question-block" id="q-block">
+            </div>
+        
+        <ul class="options-list" id="q-options">
+            </ul>
+
+        <button class="btn-reveal" id="btn-reveal" onclick="revealAnswer()">Reveal Answer</button>
+
+        <div class="answer-box" id="answer-box">
+            <div class="answer-title" id="a-correct">Correct Answer: </div>
+            <div class="explanation" id="a-exp">Explanation goes here</div>
+            <div class="trap-box">
+                <div class="trap-title">⚠️ The Trap:</div>
+                <div id="a-trap">Trap breakdown goes here</div>
+            </div>
+        </div>
+
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">Show Next Question</button>
+    </div>
+
+    <script>
+        const questions = [{"q": "1. Four biological processes are listed: 1 egestion, 2 excretion, 3 nutrition, 4 respiration. Which processes are characteristics of all living organisms?", "options": ["A: 1, 2, 3 and 4", "B: 1, 2 and 3 only", "C: 1, 2 and 4 only", "D: 2, 3 and 4 only"], "answer": "D", "explanation": "Excretion, nutrition, and respiration are essential 'MRS GREN' characteristics that all living things share.", "trap": "Egestion (passing undigested food) is not universal. Plants do not egest, so any option with '1' is incorrect!"}, {"q": "2. What are features of a palisade mesophyll cell? 1 a nucleus, 2 a cell wall, 3 chloroplasts", "options": ["A: 1, 2 and 3", "B: 1 and 2 only", "C: 1 and 3 only", "D: 2 and 3 only"], "answer": "A", "explanation": "Palisade cells are plant cells, so they definitely have a cell wall and chloroplasts for photosynthesis. They are also eukaryotic, meaning they have a nucleus.", "trap": "It is easy to forget that plant cells still have a nucleus just like animal cells do."}, {"q": "3. Which process is described as the net movement of water molecules from a dilute solution to a concentrated solution through a partially permeable membrane?", "options": ["A: absorption", "B: evaporation", "C: osmosis", "D: transpiration"], "answer": "C", "explanation": "Osmosis is the specific scientific term used only for the movement of water across a partially permeable membrane.", "trap": "Absorption and evaporation involve water, but they do not describe movement across a membrane based on concentration."}, {"q": "4. The graph shows a bell curve where enzyme activity rises to a peak and then drops to zero on both the left and right sides. What is the x-axis label?", "options": ["A: enzyme activity", "B: pH", "C: temperature", "D: time"], "answer": "B", "explanation": "Enzymes have an optimum pH. If the environment gets too acidic (left) or too alkaline (right), the enzyme denatures and activity drops to zero.", "trap": "Temperature curves usually do not start at zero on the left side (unless it is freezing), they only drop sharply on the right side when denatured by heat."}, {"q": "5. Which statement about photosynthesis is correct?", "options": ["A: Chlorophyll transfers energy from light into chemicals for the synthesis of carbohydrates.", "B: Chlorophyll transfers energy from light into chemicals for the synthesis of carbon dioxide.", "C: Mitochondria transfer energy from light...", "D: Mitochondria transfer energy from light..."], "answer": "A", "explanation": "Photosynthesis uses chlorophyll to catch sunlight and build carbohydrates (like glucose) as food for the plant.", "trap": "Carbon dioxide is a reactant that gets used up, it is not 'synthesised' (made). Mitochondria are for respiration, not photosynthesis."}, {"q": "6. Which nutrients provide a football player with the most energy per 100 g during a match? 1 carbohydrates, 2 calcium, 3 fats, 4 proteins", "options": ["A: 1 and 2", "B: 1 and 3", "C: 2 and 4", "D: 3 and 4"], "answer": "B", "explanation": "Fats provide the absolute highest amount of energy per gram, while carbohydrates provide the most accessible quick energy for athletes.", "trap": "Proteins are primarily for building and repairing muscle, and calcium is for bones—neither are primary energy sources."}, {"q": "7. Which description of physical digestion is correct?", "options": ["A: breakdown into smaller pieces with a chemical change", "B: breakdown into smaller pieces without a chemical change", "C: breakdown of large insoluble molecules into small soluble molecules", "D: breakdown of large soluble molecules into small soluble molecules"], "answer": "B", "explanation": "Physical digestion (like chewing) simply breaks large chunks of food into smaller chunks to increase surface area. The actual molecules do not change.", "trap": "Any 'chemical change' or breaking 'insoluble molecules into soluble ones' describes chemical digestion by enzymes."}, {"q": "8. Which structure in the human alimentary canal has the correct name and function?", "options": ["A: small intestine - produces amylase", "B: gall bladder - produces protease", "C: stomach - kills bacteria", "D: large intestine - absorbs amino acids"], "answer": "C", "explanation": "The stomach contains strong hydrochloric acid, which safely kills harmful bacteria on the food we eat.", "trap": "The gall bladder only stores bile (it doesn't produce enzymes). The large intestine absorbs water, not amino acids."}, {"q": "9. Which type of plant cell has a large surface area to increase the uptake of water?", "options": ["A: mesophyll", "B: root cortex", "C: root hair", "D: xylem"], "answer": "C", "explanation": "Root hair cells have a long, thin projection that reaches into the soil, creating a massive surface area to soak up water.", "trap": "Xylem vessels transport the water up the stem, but they are not responsible for absorbing it from the soil."}, {"q": "10. Which factors are possible risk factors for coronary heart disease? 1 age, 2 genetic predisposition, 3 sex", "options": ["A: 1, 2 and 3", "B: 1 and 2 only", "C: 1 and 3 only", "D: 2 and 3 only"], "answer": "A", "explanation": "All three of these are 'non-modifiable' risk factors, meaning you are born with them or they happen naturally and can increase heart disease risk.", "trap": "Sometimes students only remember lifestyle factors like smoking or diet, but natural biology plays a huge role too!"}, {"q": "11. Look at a Venn diagram comparing a Plant Cell and a Virus. What belongs where?", "options": ["A: Plant has cell wall, virus has protein coat, both have ribosomes.", "B: Plant has cell wall, virus has protein coat, both have ribosomes and genetics.", "C: Both have ribosomes.", "D: Plant has ribosomes and cell wall, virus has protein coat. Both share genetic material."], "answer": "D", "explanation": "Both plant cells and viruses carry genetic instructions (DNA/RNA). However, viruses are not true cells—they have a protein coat, but lack ribosomes and cell walls.", "trap": "Viruses do not have ribosomes; they have to hijack a host cell's ribosomes to survive."}, {"q": "12. What happens to the depth and rate of breathing in humans during exercise?", "options": ["A: depth increases, rate increases", "B: depth increases, no change to rate", "C: no change to depth, rate increases", "D: no change to either"], "answer": "A", "explanation": "During exercise, your muscles need far more oxygen. Your body responds by breathing much faster (rate) and taking much deeper breaths (depth).", "trap": "It's easy to just think of breathing 'faster', but breathing 'deeper' is equally important to clear out carbon dioxide."}, {"q": "13. In a food web, arrows go from a blackberry plant to a rabbit, a stoat, and a deer. Arrows also go from the rabbit to an owl, red fox, and stoat. Which statement is correct?", "options": ["A: 1 producer, 2 secondary consumers", "B: 2 producers, 3 secondary consumers", "C: 2 secondary consumers, 2 tertiary consumers", "D: 3 primary consumers, 3 secondary consumers"], "answer": "D", "explanation": "The rabbit, deer, and stoat eat the plant (3 primary). The fox, owl, and stoat eat the rabbit (3 secondary).", "trap": "The stoat acts as both a primary consumer (eating the plant) and a secondary consumer (eating the rabbit). Food webs can be sneaky!"}, {"q": "14. The melting point of argon is -189°C and its boiling point is -185°C. What is the arrangement of particles at -180°C and at -187°C?", "options": ["A: far apart/random (-180°C) and close together/random (-187°C)", "B: far apart/random and close together/ordered", "C: close/ordered and close/random", "D: close/ordered and far/random"], "answer": "A", "explanation": "-180°C is hotter than the boiling point, so it is a gas (far apart, random). -187°C is between melting and boiling, so it is a liquid (close together, but still moving randomly).", "trap": "Watch out for negative numbers! -180 is a higher temperature than -189."}, {"q": "15. Which diagram represents the lattice structure of sodium chloride?", "options": ["A: Alternating positive and negative charges", "B: Alternating rows of only negative and only positive", "C: Random clusters", "D: All positive charges"], "answer": "A", "explanation": "Ionic compounds like sodium chloride form a giant 3D lattice where every positive sodium ion is surrounded by negative chloride ions so they attract each other perfectly.", "trap": "Like charges repel. If two positive charges touch, they push apart, so any diagram where same charges touch is impossible."}, {"q": "16. In which molecule are exactly 10 electrons used to form covalent bonds?", "options": ["A: C2H4", "B: CH3OH (Methanol)", "C: CO2", "D: N2"], "answer": "B", "explanation": "Every single covalent bond uses 2 electrons. Methanol (CH3OH) has 5 single bonds (3 C-H, 1 C-O, 1 O-H). 5 bonds × 2 = 10 electrons.", "trap": "Carbon dioxide has two double bonds, which means 4 pairs of electrons (8 total), not 10."}, {"q": "17. The formula of an iron(III) ion is Fe³⁺. The formula of a sulfate ion is SO₄²⁻. What is the formula of iron(III) sulfate?", "options": ["A: FeSO4", "B: Fe3SO4", "C: Fe2(SO4)3", "D: Fe3(SO4)2"], "answer": "C", "explanation": "To balance the charges to zero, you 'cross over' the numbers. You need two Fe³⁺ ions (+6) to perfectly balance three SO₄²⁻ ions (-6).", "trap": "It is easy to swap the numbers the wrong way or forget the brackets around the polyatomic sulfate ion."}, {"q": "18. Which reaction pathway diagram shows an exothermic reaction?", "options": ["A: Products higher than reactants", "B: Products higher than reactants", "C: Products lower than reactants, activation energy goes up from reactants", "D: Products lower than reactants, activation energy goes from products to peak"], "answer": "C", "explanation": "In an exothermic reaction, energy is released, so the products line must end up lower than the reactants line. The activation energy is always measured upwards from the reactants.", "trap": "If the products end up higher, that means energy was taken in (endothermic)."}, {"q": "19. A graph shows the volume of carbon dioxide produced in a reaction over time. At which time is the rate of reaction greatest?", "options": ["A: The flat start", "B: The steepest upward curve", "C: Where it begins to level off", "D: The flat top line"], "answer": "B", "explanation": "The rate of a reaction is shown by the steepness (gradient) of the line. The steeper the line, the faster the reaction is happening.", "trap": "The flat line at the top (D) means the reaction has completely stopped because the reactants are used up!"}, {"q": "20. Ammonia dissolves in water. Which test shows that the solution has a pH of 9?", "options": ["A: Blue litmus stays blue.", "B: Red litmus turns blue.", "C: Universal indicator turns green.", "D: Universal indicator turns blue / blue-green."], "answer": "D", "explanation": "pH 9 is a weak alkali. Universal indicator is a full rainbow scale, and it turns blue or blue-green for weak alkalis.", "trap": "Red litmus paper turning blue only tells you it is an alkali; it cannot tell you the exact pH number. Only Universal Indicator can do that."}, {"q": "21. What is the method by which elements are arranged in the Periodic Table?", "options": ["A: by nucleon number", "B: by number of electrons", "C: by number of neutrons", "D: by number of protons"], "answer": "D", "explanation": "The modern Periodic Table places elements strictly in order of their atomic number, which is exactly the number of protons in their nucleus.", "trap": "The nucleon (mass) number is a common trick answer. While mass generally increases left to right, there are exceptions (like Argon and Potassium), so protons are the true rule."}, {"q": "22. Which statement about Group I elements is correct?", "options": ["A: Lithium and potassium are poor electrical conductors.", "B: Potassium has a higher density than lithium.", "C: Sodium and potassium are relatively hard metals.", "D: Sodium reacts with water to produce a lilac flame."], "answer": "B", "explanation": "As you go down Group 1, the atoms get bigger and the metals generally become denser. Potassium is heavier and denser than lithium.", "trap": "Group 1 metals are famously soft (you can cut them with a butter knife!). Potassium makes a lilac flame, while sodium makes a yellow-orange flame."}, {"q": "23. Which mixture results in the displacement of a halogen?", "options": ["A: Br2(aq) and NaCl(aq)", "B: Cl2(g) and KI(aq)", "C: I2(aq) and KBr(aq)", "D: NaBr(aq) and KCl(aq)"], "answer": "B", "explanation": "A more reactive halogen will kick out (displace) a less reactive one. Chlorine is higher up the group than Iodine, so Chlorine displaces Iodine from the compound.", "trap": "Iodine (C) is too far down the group and too weak to displace Bromine. Bromine (A) is too weak to displace Chlorine."}, {"q": "24. What is NOT a property of transition elements?", "options": ["A: form coloured compounds", "B: good electrical conductivity", "C: high melting point", "D: low density"], "answer": "D", "explanation": "Transition metals (like Iron or Copper) are heavy and dense. Low density is a unique feature of Group 1 alkali metals, not transition metals.", "trap": "Transition metals are famous for forming beautiful coloured compounds and making great catalysts, but they are definitely heavy."}, {"q": "25. How is an Rf value calculated in chromatography?", "options": ["A: distance travelled by substance / distance travelled by solvent", "B: distance travelled by solvent / distance travelled by substance", "C: distance to top of paper / distance of substance", "D: distance of substance / distance to top of paper"], "answer": "A", "explanation": "Rf is always a ratio showing how far the ink spot moved compared to the water (solvent). Spot distance is divided by the solvent front distance.", "trap": "Because the spot can never travel further than the water, the Rf value must always be less than 1. Dividing it the other way (B) would give a number bigger than 1."}, {"q": "26. How do you obtain pure crystals of magnesium sulfate from an aqueous solution?", "options": ["A: Filter the crystals and dry them.", "B: Filter and heat to dryness.", "C: Heat to dryness and cool.", "D: Heat to remove some water, leave to cool and evaporate slowly."], "answer": "D", "explanation": "To get perfect, large crystals, you only heat the water gently to make it concentrated (saturated), then let the rest cool slowly so crystals can form perfectly over time.", "trap": "Heating to complete dryness (C) will destroy the crystal structure and just leave a dusty powder behind."}, {"q": "27. Four statements about alkenes are listed. Which are correct? 1 Turn bromine colourless to orange. 2 Reactants in addition reactions. 3 React with steam with an acid catalyst. 4 React with hydrogen without a catalyst.", "options": ["A: 1 and 2", "B: 1 and 3", "C: 2 and 3", "D: 3 and 4"], "answer": "C", "explanation": "Alkenes undergo addition reactions (the double bond pops open). They also react with steam (hydration) to make alcohol, requiring an acid catalyst.", "trap": "Alkenes turn orange bromine water colourless, not the other way around. Hydrogenation (adding hydrogen) requires a Nickel catalyst."}, {"q": "28. A speed-time graph shows a car cruising at 10 m/s, then braking from 90s to 100s until it stops. What distance did it travel while decelerating?", "options": ["A: 50 m", "B: 100 m", "C: 200 m", "D: 500 m"], "answer": "A", "explanation": "Distance on a speed-time graph is the area under the line. The deceleration part is a triangle. Area = ½ × base (10 seconds) × height (10 m/s) = 50 meters.", "trap": "Don't just multiply 10 x 10 = 100. Because it is a triangle slowing down, you must divide it by 2!"}, {"q": "29. A force of 2.0 N moves an object a distance of 40 cm. What is the work done?", "options": ["A: 0.20 J", "B: 0.80 J", "C: 5.0 J", "D: 80 J"], "answer": "B", "explanation": "Work Done = Force × Distance. The key is that distance MUST be in meters. 40 cm = 0.4 meters. So, 2.0 N × 0.4 m = 0.80 Joules.", "trap": "If you forget to convert centimeters to meters, you will accidentally calculate 2.0 × 40 = 80 J, which is wrong."}, {"q": "30. A chair has a weight of 80 N and 4 legs. Each leg has a base area of 20 cm². What is the pressure on the floor?", "options": ["A: 1.0 Pa", "B: 4.0 Pa", "C: 10000 Pa", "D: 40000 Pa"], "answer": "C", "explanation": "Total area = 4 legs × 20 cm² = 80 cm². Pressure = Force / Area. 80 N / 80 cm² = 1 N/cm². To convert 1 N/cm² to Pascals (N/m²), you multiply by 10,000. So, 10,000 Pa.", "trap": "It is easy to forget there are 4 legs and only divide by 20. Also, remember 1 square meter is 10,000 square centimeters!"}, {"q": "31. Why are metals better thermal conductors than plastics?", "options": ["A: Metals contain delocalised electrons.", "B: Metals have high melting points.", "C: Strong forces between particles.", "D: Particles are far apart."], "answer": "A", "explanation": "Metals have a sea of free, 'delocalised' electrons that can bump into each other and race through the metal, carrying heat energy incredibly fast.", "trap": "High melting points and strong forces are true facts about metals, but they don't explain how heat travels through them."}, {"q": "32. How do you get a greater rate of evaporation of water from a beaker?", "options": ["A: decrease temp, further from fan", "B: decrease temp, nearer to fan", "C: increase temp, further from fan", "D: increase temp, nearer to fan"], "answer": "D", "explanation": "Increasing the heat gives the water molecules more energy to escape into the air. Moving the fan closer blows the escaped water vapour away faster, making room for more.", "trap": "Evaporation is basically drying. Think of drying your hair: you want high heat and a close, strong fan!"}, {"q": "33. A beaker of water is heated at the bottom. What happens to the water right above the heat?", "options": ["A: volume increases, density decreases", "B: volume increases, density increases", "C: volume stays same, density decreases", "D: volume stays same, density increases"], "answer": "A", "explanation": "When water gets hot, the molecules push apart and expand (volume increases). Because it takes up more space but weighs the same, it becomes less dense and floats upward.", "trap": "Hot air and hot water always rise because they become lighter (less dense), not heavier."}, {"q": "34. An image of an object is formed by a flat bathroom plane mirror. What are its characteristics?", "options": ["A: real and same size", "B: real and smaller", "C: virtual and same size", "D: virtual and smaller"], "answer": "C", "explanation": "A mirror image is 'virtual' because the light rays don't actually go behind the wall, your brain just thinks they do. It also shows you exactly the same size you actually are.", "trap": "A 'real' image is one that can be projected onto a movie screen. You can't project a bathroom mirror reflection onto a wall."}, {"q": "35. Light passes through a rectangular glass block. Which path does it take?", "options": ["A: Bends towards the normal on entry, away on exit", "B: Bends away on entry, towards on exit", "C: Goes straight through", "D: Bends down randomly"], "answer": "A", "explanation": "Glass is denser than air. When light enters glass, it slows down and bends inwards (towards the normal line). When it escapes back into air, it speeds up and bends outwards.", "trap": "If the light hits the glass exactly straight on (90 degrees), it goes straight through, but this diagram shows it hitting at an angle."}, {"q": "36. What is the speed of ultraviolet radiation in a vacuum?", "options": ["A: 3.0 × 10^4 m/s", "B: 3.0 × 10^6 m/s", "C: 3.0 × 10^8 m/s", "D: 3.0 × 10^10 m/s"], "answer": "C", "explanation": "All electromagnetic waves (light, UV, radio, x-rays) travel at the exact same 'speed of light' in a vacuum, which is a massive 300,000,000 m/s (3.0 × 10^8).", "trap": "10^8 is the magic number. Sound waves are much slower, traveling around 340 m/s."}, {"q": "37. Two identical lamps are in parallel to a 12V supply. The main ammeter reads 3.0 A. What is the power transferred by EACH lamp?", "options": ["A: 4.0 W", "B: 8.0 W", "C: 18 W", "D: 36 W"], "answer": "C", "explanation": "In parallel, both lamps get the full 12V. Because they are identical, the 3.0A total current splits equally, giving 1.5A to each lamp. Power = Voltage × Current (12V × 1.5A = 18W).", "trap": "If you don't split the current, you will calculate 12 × 3 = 36W, which is the power for the whole circuit, not just one lamp."}, {"q": "38. A circuit contains a 12 ohm resistor and a 6 ohm resistor in parallel. What is the combined resistance?", "options": ["A: 0.25 ohms", "B: 4.0 ohms", "C: 9.0 ohms", "D: 18 ohms"], "answer": "B", "explanation": "The formula for two parallel resistors is Product ÷ Sum. (12 × 6) ÷ (12 + 6) = 72 ÷ 18 = 4.0 ohms.", "trap": "If they were in series, you would just add them (18 ohms). A rule of thumb for parallel: the answer is ALWAYS smaller than the smallest resistor!"}, {"q": "39. What is the purpose of a fuse in an electric circuit?", "options": ["A: Acts as an extra resistor", "B: Keeps current steady", "C: Keeps voltage steady", "D: Protects circuit from a current that is too large"], "answer": "D", "explanation": "A fuse contains a very thin wire. If the current gets dangerously high, the wire melts and snaps, breaking the circuit so your appliances don't catch fire.", "trap": "A fuse doesn't regulate or steady the power. It does absolutely nothing until an emergency happens, then it sacrifices itself to save the circuit."}, {"q": "40. Which object is officially a dwarf planet?", "options": ["A: Mars", "B: Mercury", "C: Jupiter", "D: Pluto"], "answer": "D", "explanation": "Pluto was downgraded to a dwarf planet by scientists because it hasn't cleared its orbit of other rocky debris.", "trap": "Mercury is small, but it is a fully classified major planet."}];
+        
+        let currentQIndex = 0;
+
+        // Function to extract numbers list into an array of strings
+        function extractList(text) {
+            const parts = text.split(/(?=\d\s)/);
+            if(parts.length > 1) {
+                 const mainQ = parts[0].trim();
+                 const listItems = parts.slice(1).map(p => p.trim());
+                 // Check if the last item contains a follow up question
+                 const lastItem = listItems[listItems.length-1];
+                 let followUp = "";
+                 
+                 // Look for sentence ending punctuation followed by a space and capital letter, or just a question mark
+                 const splitPoint = lastItem.search(/[.?]\s+[A-Z]/);
+                 if(splitPoint !== -1) {
+                     followUp = lastItem.substring(splitPoint + 1).trim();
+                     listItems[listItems.length-1] = lastItem.substring(0, splitPoint + 1).trim();
+                 } else if (lastItem.includes("?")) {
+                      const qIndex = lastItem.indexOf("?");
+                      // If the question mark is deep in the string, split it.
+                      if(qIndex > 10 && qIndex < lastItem.length - 1) {
+                          // Not a perfect split but a safe fallback if regex misses
+                      }
+                 }
+                 
+                 // Manual override for known structures in the dataset
+                 if(text.includes("Which processes are characteristics")) {
+                     const qSplit = text.indexOf("Which processes");
+                     return {
+                         main: text.substring(0, text.indexOf(":")+1),
+                         list: ["1 egestion", "2 excretion", "3 nutrition", "4 respiration"],
+                         followUp: "Which processes are characteristics of all living organisms?"
+                     }
+                 }
+                 if(text.includes("What are features of a palisade")) {
+                     return {
+                         main: "What are features of a palisade mesophyll cell?",
+                         list: ["1 a nucleus", "2 a cell wall", "3 chloroplasts"],
+                         followUp: ""
+                     }
+                 }
+                 if(text.includes("Which nutrients provide")) {
+                     return {
+                         main: "Which nutrients provide a football player with the most energy per 100 g during a match?",
+                         list: ["1 carbohydrates", "2 calcium", "3 fats", "4 proteins"],
+                         followUp: ""
+                     }
+                 }
+                 if(text.includes("Which factors are possible risk")) {
+                     return {
+                         main: "Which factors are possible risk factors for coronary heart disease?",
+                         list: ["1 age", "2 genetic predisposition", "3 sex"],
+                         followUp: ""
+                     }
+                 }
+                 if(text.includes("Four statements about alkenes are listed")) {
+                      return {
+                          main: "Four statements about alkenes are listed. Which are correct?",
+                          list: ["1 Turn bromine colourless to orange.", "2 Reactants in addition reactions.", "3 React with steam with an acid catalyst.", "4 React with hydrogen without a catalyst."],
+                          followUp: ""
+                      }
+                 }
+            }
+            return null;
+        }
+
+        function startQuiz() {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            // Reset UI for the new question
+            document.getElementById('answer-box').style.display = 'none';
+            document.getElementById('answer-box').style.opacity = '0';
+            document.getElementById('btn-next').style.display = 'none';
+            document.getElementById('btn-reveal').style.display = 'block';
+
+            // Load Data
+            const qData = questions[currentQIndex];
+            document.getElementById('q-counter').innerText = `Question ${currentQIndex + 1} of ${questions.length}`;
+            
+            const qBlock = document.getElementById('q-block');
+            const extracted = extractList(qData.q);
+            
+            if(extracted) {
+                let html = `<div class="question-text">${extracted.main}</div>`;
+                html += `<div class="sub-points"><ul>`;
+                extracted.list.forEach(item => {
+                    html += `<li>${item}</li>`;
+                });
+                html += `</ul></div>`;
+                if(extracted.followUp) {
+                    html += `<div class="question-text">${extracted.followUp}</div>`;
+                }
+                qBlock.innerHTML = html;
+            } else {
+                qBlock.innerHTML = `<div class="question-text">${qData.q}</div>`;
+            }
+
+            const optionsList = document.getElementById('q-options');
+            optionsList.innerHTML = '';
+            qData.options.forEach(opt => {
+                let li = document.createElement('li');
+                li.className = 'option-item';
+                li.innerText = opt;
+                optionsList.appendChild(li);
+            });
+
+            document.getElementById('a-correct').innerText = `Correct Answer: ${qData.answer}`;
+            document.getElementById('a-exp').innerText = qData.explanation;
+            document.getElementById('a-trap').innerText = qData.trap;
+        }
+
+        function revealAnswer() {
+            // Hide the reveal button
+            document.getElementById('btn-reveal').style.display = 'none';
+            
+            // Highlight correct option dynamically
+            const optionsList = document.getElementById('q-options').children;
+            const correctLetter = questions[currentQIndex].answer;
+            for (let i = 0; i < optionsList.length; i++) {
+                if (optionsList[i].innerText.startsWith(correctLetter + ":")) {
+                    optionsList[i].classList.add('highlight-correct');
+                }
+            }
+
+            // Show the explanation box
+            const answerBox = document.getElementById('answer-box');
+            answerBox.style.display = 'block';
+            
+            // Trigger fade in
+            setTimeout(() => {
+                answerBox.style.opacity = '1';
+                
+                // Show next button after fade
+                setTimeout(() => {
+                    document.getElementById('btn-next').style.display = 'block';
+                    if (currentQIndex === questions.length - 1) {
+                        document.getElementById('btn-next').innerText = "Finish Review Session";
+                    }
+                }, 300);
+
+            }, 50);
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < questions.length) {
+                loadQuestion();
+            } else {
+                document.getElementById('quiz-screen').innerHTML = `
+                    <h1 style="text-align:center; color:#48BB78; border:none; font-size:2rem;">Session Complete!</h1>
+                    <p style="text-align:center; font-size:1.2rem;">Amazing job. Take a break and rest up before the exam!</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
